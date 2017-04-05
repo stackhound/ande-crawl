@@ -22,8 +22,8 @@ func main() {
 
 		// No errors, store the record:
 		record := db.ConsumptionRecord{}
-		record.Consumption = consumption
-		record.Amount = amount
+		//record.Consumption = consumption
+		//record.Amount = amount
 		db.StoreConsumptionRecord(&record)
 	}
 }

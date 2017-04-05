@@ -5,10 +5,10 @@ import (
 )
 
 // FetchConsumption gets the consumption for a given NIS.
-func FetchConsumption(nis string) (int64, int64, error) {
+func FetchConsumption(nis string) (string, string, error) {
 	log.Printf("Fetching power consumption for %s", nis)
-	var consumption, amount int64
-	consumption = 400
-	amount = 350000
+	var consumption, amount string
+	consumption = "400"
+	amount = "350000"
 	return consumption, amount, nil
 }
