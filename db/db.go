@@ -9,7 +9,7 @@ type ConsumptionRecord struct {
 	NIS         string `json:"nis"`
 	Consumption int64  `json:"consumption"`
 	Amount      int64  `json:"amount"`
-	CreatedAt   int64  `json:"created_at"`
+	//CreatedAt   int64  `json:"created_at"` //
 }
 
 // GetAvailableNIS returns an array of NIS records.
