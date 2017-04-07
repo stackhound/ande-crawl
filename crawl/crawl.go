@@ -1,9 +1,8 @@
 package crawl
 
 import (
-	"fmt"
 	"io/ioutil"
-	//"log"
+	"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -30,9 +29,8 @@ type Result struct {
 
 // FetchConsumption gets the consumption for a given NIS.
 func FetchConsumption(nis string) (int64, int64, error) {
-	//log.Printf("Fetching power consumption for %s", nis)
+	log.Printf("Fetching power consumption for %s", nis)
 	var consumption, amount int64
-	fmt.Println("Consultando NIS:", nis)
 	result, err := query(nis)
 
 	if result.Amount > 0 && err == nil {
