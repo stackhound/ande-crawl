@@ -3,7 +3,7 @@ package crawl
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
+	//"log"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -15,6 +15,13 @@ const (
 	endpointUrl = "http://201.217.43.238:9080/consulta/consulta_02.php"
 )
 
+var (
+	/*Following values taken from http://www.ande.gov.py/calcule_consumo.php */
+	type1Ammount int64 = 312 //real one:  311.55
+	type2Ammount int64 = 350 //real one: 349.89
+	type3Ammount int64 = 365 //real one: 365.45
+)
+
 type Result struct {
 	InvoiceCount   int64
 	Amount         int64
@@ -22,12 +29,25 @@ type Result struct {
 }
 
 // FetchConsumption gets the consumption for a given NIS.
-func FetchConsumption(nis string) (string, string, error) {
-	log.Printf("Fetching power consumption for %s", nis)
-	var consumption, amount string
-	consumption = "400"
-	amount = "350000"
+func FetchConsumption(nis string) (int64, int64, error) {
+	//log.Printf("Fetching power consumption for %s", nis)
+	var consumption, amount int64
+	fmt.Println("Consultando NIS:", nis)
+	result, err := query(nis)
+
+	if result.Amount > 0 && err == nil {
+		amount = result.Amount
+		consumption = amount / type1Ammount
+		/*	if result.InvoiceCount == 0 {
+				//fmt.Println("Factura al dia, monto del ultimo ciclo: Gs.", result.Amount)
+			} else {
+				//fmt.Println("Factura con boletas acumuladas, boletas:", result.InvoiceCount)
+				//fmt.Println("Monto total es:", result.Amount)
+			}*/
+		//fmt.Println("Vence el:", result.ExpirationDate)
+	}
 	return consumption, amount, nil
+
 }
 
 func query(nis string) (result Result, err error) {
@@ -36,7 +56,7 @@ func query(nis string) (result Result, err error) {
 	}
 	var resp *http.Response
 	resp, err = http.PostForm(endpointUrl, values)
-	fmt.Println(resp, err)
+	//mt.Println(resp, err)
 	if err == nil {
 		var body []byte
 		body, err = ioutil.ReadAll(resp.Body)
@@ -70,23 +90,4 @@ func query(nis string) (result Result, err error) {
 
 	}
 	return result, err
-}
-
-func main() {
-	// var nis = "1427205"
-	var nis = "1427216"
-	fmt.Println("Consultando NIS:", nis)
-	result, err := query(nis)
-
-	if result.Amount > 0 && err == nil {
-		if result.InvoiceCount == 0 {
-			fmt.Println("Factura al dia, monto del ultimo ciclo: Gs.", result.Amount)
-		} else {
-			fmt.Println("Factura con boletas acumuladas, boletas:", result.InvoiceCount)
-			fmt.Println("Monto total es:", result.Amount)
-		}
-		fmt.Println("Vence el:", result.ExpirationDate)
-	}
-
-	// fmt.Println(result, err)
 }

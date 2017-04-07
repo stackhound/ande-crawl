@@ -1,30 +1,41 @@
 package main
 
 import (
-	"log"
-
-	//"github.com/stackhound/ande-crawl/crawl"
+	//"encoding/json"
+	"github.com/stackhound/ande-crawl/crawl"
 	"github.com/stackhound/ande-crawl/db"
+	"log"
+	"strconv"
 )
 
 func main() {
-	records := db.GetAvailableNIS()
-	log.Println(records)
-	/*
-		for _, nis := range records {
-			consumption, amount, err := crawl.FetchConsumption(nis)
+	records, err := db.GetAvailableNIS()
+	if err != nil {
+		log.Fatal("Couldn't get the data:", err)
+	}
+	// convert it to JSON so it can be displayed
+	/*formatter := json.MarshalIndent
+	response, err := formatter(users, " ", "   ")
 
-			if err != nil {
-				log.Fatal("Couldn't fetch consumption!")
+	log.Println(string(response))*/
 
-				// Skip this:
-				continue
-			}
+	for _, nis := range records {
+		t := strconv.FormatInt(nis.NIS, 10)
+		log.Println(t)
+		//log.Println(int64(nis.NIS))
+		consumption, amount, err := crawl.FetchConsumption(string(t))
 
-			// No errors, store the record:
-			record := db.ConsumptionRecord{}
-			//record.Consumption = consumption
-			//record.Amount = amount
-			db.StoreConsumptionRecord(&record)
-		}*/
+		if err != nil {
+			log.Fatal("Couldn't fetch consumption!")
+
+			// Skip this:
+			continue
+		}
+
+		// No errors, store the record:
+		record := db.ConsumptionRecord{}
+		record.Consumption = consumption
+		record.Amount = amount
+		db.StoreConsumptionRecord(&record)
+	}
 }
