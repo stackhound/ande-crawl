@@ -54,7 +54,6 @@ func query(nis string) (result Result, err error) {
 	}
 	var resp *http.Response
 	resp, err = http.PostForm(endpointUrl, values)
-	//mt.Println(resp, err)
 	if err == nil {
 		var body []byte
 		body, err = ioutil.ReadAll(resp.Body)
@@ -86,6 +85,8 @@ func query(nis string) (result Result, err error) {
 			result.InvoiceCount = countInt
 		}
 
+	} else {
+		log.Fatal("There was an error:", err)
 	}
 	return result, err
 }
