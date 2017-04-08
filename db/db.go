@@ -14,15 +14,15 @@ var (
 
 // ConsumptionRecord represents a data structure for the JSON document to be stored.
 type ConsumptionRecord struct {
-	NIS         string `json:"nis"`
-	Consumption int64  `json:"consumption"`
-	Amount      int64  `json:"amount"`
+	NIS         string `json:"nis" bson:"nis"`
+	Consumption int64  `json:"consumption" bson:"consumption"`
+	Amount      int64  `json:"amount" bson:"amount"`
 }
 
 // User represents the User document.
 type User struct {
-	NIS  int64 `bson:"nis"`
-	Type int   `bson:"type"`
+	NIS      int64 `json:"nis" bson:"nis"`
+	Category int   `json:"category" bson:"category"`
 }
 
 // getSession defines cluster and starts the connection

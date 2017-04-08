@@ -16,26 +16,27 @@ const (
 
 var (
 	/*Following values taken from http://www.ande.gov.py/calcule_consumo.php */
-	type1Ammount int64 = 312 //real one:  311.55
-	type2Ammount int64 = 350 //real one: 349.89
-	type3Ammount int64 = 365 //real one: 365.45
+	type1Ammount = 312.55 //real one:  311.55
+	type2Ammount = 350.89 //real one: 349.89
+	type3Ammount = 365.45 //real one: 365.45
 )
 
 type Result struct {
-	InvoiceCount   int64
-	Amount         int64
-	ExpirationDate string
+	InvoiceCount   int64  `json:"invoiceCount" bson:"invoiceCount"`
+	Amount         int64  `json:"amount" bson:"amount"`
+	ExpirationDate string `json:"expirationDate" bson:"expirationDate"`
 }
 
 // FetchConsumption gets the consumption for a given NIS.
 func FetchConsumption(nis string) (int64, int64, error) {
 	log.Printf("Fetching power consumption for %s", nis)
-	var consumption, amount int64
+	var consumption int64
+	var amount int64
 	result, err := query(nis)
 
 	if result.Amount > 0 && err == nil {
 		amount = result.Amount
-		consumption = amount / type1Ammount
+		consumption = amount / int64(type1Ammount)
 		/*	if result.InvoiceCount == 0 {
 				//fmt.Println("Factura al dia, monto del ultimo ciclo: Gs.", result.Amount)
 			} else {
