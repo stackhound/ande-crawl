@@ -35,8 +35,8 @@ func main() {
 		if err != nil {
 			log.Println("Couldn't insert data:", err)
 		}
-		log.Println("Done with this one:")
+		log.Println("Done with this one")
 	}
-	log.Println("goodbye")
+	log.Println("Goodbye")
 
 }
