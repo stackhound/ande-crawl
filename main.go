@@ -15,7 +15,6 @@ func main() {
 
 	for _, nis := range records {
 		t := strconv.FormatInt(nis.NIS, 10)
-		log.Println(t)
 		consumption, amount, err := crawl.FetchConsumption(string(t))
 
 		if err != nil {

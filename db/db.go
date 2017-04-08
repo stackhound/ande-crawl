@@ -5,6 +5,7 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"
+	"time"
 )
 
 var (
@@ -14,9 +15,11 @@ var (
 
 // ConsumptionRecord represents a data structure for the JSON document to be stored.
 type ConsumptionRecord struct {
-	NIS         string `json:"nis" bson:"nis"`
-	Consumption int64  `json:"consumption" bson:"consumption"`
-	Amount      int64  `json:"amount" bson:"amount"`
+	NIS          string    `json:"nis" bson:"nis"`
+	Consumption  int64     `json:"consumption" bson:"consumption"`
+	Amount       int64     `json:"amount" bson:"amount"`
+	Expiration   time.Time `json:"expiration" bson:"expiration"`
+	PendingBills int64     `json:"pending_bills" bson:"pending_bills"`
 }
 
 // User represents the User document.
