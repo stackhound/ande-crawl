@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 const (
@@ -15,6 +16,7 @@ const (
 )
 
 var (
+	layout = "2006-01-02"
 	/*Following values taken from http://www.ande.gov.py/calcule_consumo.php */
 	type1Ammount = 312.55 //real one:  311.55
 	type2Ammount = 350.89 //real one: 349.89
@@ -22,21 +24,22 @@ var (
 )
 
 type Result struct {
-	InvoiceCount   int64  `json:"invoiceCount" bson:"invoiceCount"`
-	Amount         int64  `json:"amount" bson:"amount"`
-	ExpirationDate string `json:"expirationDate" bson:"expirationDate"`
+	InvoiceCount   int64     `json:"invoiceCount" bson:"invoiceCount"`
+	Amount         int64     `json:"amount" bson:"amount"`
+	ExpirationDate time.Time `json:"expirationDate" bson:"invoiceCount"`
 }
 
 // FetchConsumption gets the consumption for a given NIS.
-func FetchConsumption(nis string) (int64, int64, error) {
+func FetchConsumption(nis string) (int64, int64, time.Time, error) {
 	log.Printf("Fetching power consumption for %s", nis)
-	var consumption int64
-	var amount int64
+	var consumption, amount int64
+	var expirationDate time.Time
 	result, err := query(nis)
 
 	if result.Amount > 0 && err == nil {
 		amount = result.Amount
 		consumption = amount / int64(type1Ammount)
+		expirationDate = result.ExpirationDate
 		/*	if result.InvoiceCount == 0 {
 				//fmt.Println("Factura al dia, monto del ultimo ciclo: Gs.", result.Amount)
 			} else {
@@ -45,7 +48,7 @@ func FetchConsumption(nis string) (int64, int64, error) {
 			}*/
 		//fmt.Println("Vence el:", result.ExpirationDate)
 	}
-	return consumption, amount, nil
+	return consumption, amount, expirationDate, nil
 
 }
 
@@ -63,7 +66,12 @@ func query(nis string) (result Result, err error) {
 		expirationDateExpr := regexp.MustCompile("Fecha de vencimiento (.{10})")
 		expirationDateMatch := expirationDateExpr.FindStringSubmatch(bodyStr)
 		if len(expirationDateMatch) >= 1 {
-			result.ExpirationDate = expirationDateMatch[1]
+			exp := expirationDateMatch[1]
+			result.ExpirationDate, err = time.Parse(layout, exp)
+
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 
 		amountExpr := regexp.MustCompile("Total Gs.: (.*) comisión")
@@ -89,5 +97,6 @@ func query(nis string) (result Result, err error) {
 	} else {
 		log.Fatal("There was an error:", err)
 	}
+
 	return result, err
 }
