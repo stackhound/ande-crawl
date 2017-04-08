@@ -9,8 +9,9 @@ import (
 )
 
 var (
-	databaseName   = "ande"
-	collectionName = "users"
+	databaseName          = "ande"
+	userCollection        = "users"
+	consumptionCollection = "consumptions"
 )
 
 // ConsumptionRecord represents a data structure for the JSON document to be stored.
@@ -18,7 +19,7 @@ type ConsumptionRecord struct {
 	NIS          string    `json:"nis" bson:"nis"`
 	Consumption  int64     `json:"consumption" bson:"consumption"`
 	Amount       int64     `json:"amount" bson:"amount"`
-	PendingBills int64     `json:"pending_bills" bson:"pending_bills"`
+	PendingBills int64     `json:"pendingBills" bson:"pendingBills"`
 	Expiration   time.Time `json:"expiration" bson:"expiration"`
 }
 
@@ -48,13 +49,22 @@ func GetAvailableNIS() (users []User, err error) {
 		return users, err
 	}
 
-	c := session.DB(databaseName).C(collectionName)
+	c := session.DB(databaseName).C(userCollection)
 	err = c.Find(bson.M{}).All(&users)
 
 	return users, err
 }
 
 // StoreConsumptionRecord stores the consumption record.
-func StoreConsumptionRecord(record *ConsumptionRecord) {
+func StoreConsumptionRecord(record *ConsumptionRecord) (err error) {
 	log.Println("Storing consumption record: ", record)
+	var session *mgo.Session
+	session, err = getSession()
+	defer session.Close()
+	if err != nil {
+		log.Println("It seems like there was an error: ", err)
+	}
+	c := session.DB(databaseName).C(consumptionCollection)
+	err = c.Insert(&ConsumptionRecord{record.NIS, record.Consumption, record.Amount, record.PendingBills, record.Expiration})
+	return err
 }

@@ -71,7 +71,8 @@ func query(nis string) (result Result, err error) {
 			result.ExpirationDate, err = time.Parse(layout, exp)
 
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
+
 			}
 		}
 

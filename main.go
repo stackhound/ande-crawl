@@ -26,10 +26,17 @@ func main() {
 
 		// No errors, store the record:
 		record := db.ConsumptionRecord{}
+		record.NIS = t
 		record.Consumption = consumption
 		record.Amount = amount
 		record.PendingBills = pendingBills
 		record.Expiration = expirationDate
-		db.StoreConsumptionRecord(&record)
+		err = db.StoreConsumptionRecord(&record)
+		if err != nil {
+			log.Println("Couldn't insert data:", err)
+		}
+		log.Println("Done with this one:")
 	}
+	log.Println("goodbye")
+
 }
