@@ -18,8 +18,8 @@ type ConsumptionRecord struct {
 	NIS          string    `json:"nis" bson:"nis"`
 	Consumption  int64     `json:"consumption" bson:"consumption"`
 	Amount       int64     `json:"amount" bson:"amount"`
-	Expiration   time.Time `json:"expiration" bson:"expiration"`
 	PendingBills int64     `json:"pending_bills" bson:"pending_bills"`
+	Expiration   time.Time `json:"expiration" bson:"expiration"`
 }
 
 // User represents the User document.

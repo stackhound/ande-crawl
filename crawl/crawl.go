@@ -30,9 +30,9 @@ type Result struct {
 }
 
 // FetchConsumption gets the consumption for a given NIS.
-func FetchConsumption(nis string) (int64, int64, time.Time, error) {
+func FetchConsumption(nis string) (int64, int64, int64, time.Time, error) {
 	log.Printf("Fetching power consumption for %s", nis)
-	var consumption, amount int64
+	var consumption, amount, pendingBills int64
 	var expirationDate time.Time
 	result, err := query(nis)
 
@@ -40,6 +40,7 @@ func FetchConsumption(nis string) (int64, int64, time.Time, error) {
 		amount = result.Amount
 		consumption = amount / int64(type1Ammount)
 		expirationDate = result.ExpirationDate
+		pendingBills = result.InvoiceCount
 		/*	if result.InvoiceCount == 0 {
 				//fmt.Println("Factura al dia, monto del ultimo ciclo: Gs.", result.Amount)
 			} else {
@@ -48,7 +49,7 @@ func FetchConsumption(nis string) (int64, int64, time.Time, error) {
 			}*/
 		//fmt.Println("Vence el:", result.ExpirationDate)
 	}
-	return consumption, amount, expirationDate, nil
+	return consumption, amount, pendingBills, expirationDate, nil
 
 }
 
