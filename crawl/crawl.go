@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const (
+var (
 	endpointUrl = "http://201.217.43.238:9080/consulta/consulta_02.php"
 )
 
