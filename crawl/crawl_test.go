@@ -7,6 +7,7 @@ import (
 )
 
 type testHandler struct {
+	//
 }
 
 // Esta funcion va a ser llamada en cada request:
