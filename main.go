@@ -15,7 +15,7 @@ func main() {
 
 	for _, nis := range records {
 		t := strconv.FormatInt(nis.NIS, 10)
-		consumption, amount, pendingBills, expirationDate, err := crawl.FetchConsumption(string(t))
+		consumption, amount, pendingBills, expirationDate, err := crawl.FetchConsumption(t)
 
 		if err != nil {
 			log.Fatal("Couldn't fetch consumption!")
