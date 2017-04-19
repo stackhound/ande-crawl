@@ -1,13 +1,18 @@
 package main
 
 import (
-	"github.com/stackhound/ande-crawl/crawl"
-	"github.com/stackhound/ande-crawl/db"
 	"log"
 	"strconv"
+
+	"github.com/stackhound/ande-crawl/crawl"
+	"github.com/stackhound/ande-crawl/db"
+	"github.com/stackhound/ande-crawl/status"
 )
 
 func main() {
+	// Con esto metemos el servidor web en una goroutine
+	go status.Listen()
+
 	records, err := db.GetAvailableNIS()
 	if err != nil {
 		log.Fatal("Couldn't get the data:", err)
@@ -37,6 +42,7 @@ func main() {
 		}
 		log.Println("Done with this one")
 	}
+	status.S.Iterations++
 	log.Println("Goodbye")
 
 }
